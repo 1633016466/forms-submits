@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic ComboTree - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+</head>
+<body>
+<ul id="tt"></ul>
+</body>
+<script>
+$('#tt').tree({
+    url:'/permission/data_permission_tree',
+    checkbox:true,
+    onLoadSuccess:function(){
+    	var ids_string = sessionStorage.permissionIds+'';
+	    for(var k=0;k<ids_string.split(",").length;k++){
+	    	var id = ids_string.split(",")[k];
+	    	var node = $('#tt').tree('find', id);
+	    	if($('#tt').tree('isLeaf', node.target))
+	        	$('#tt').tree('check', node.target);
+	    }
+    	sessionStorage.permissionIds = ''; 
+    }
+});
+
+function getSeletId(){
+	var nodes = $('#tt').tree('getChecked', ['checked','indeterminate']);
+	return nodes;
+}
+
+</script>
+</html>

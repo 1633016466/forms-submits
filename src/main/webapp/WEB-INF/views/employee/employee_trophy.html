@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+/*rank-banner*/
+.rank_banner { height:110px; background:url(http://www.xbiao.com/images/rank/rank_banner.png) right no-repeat #000; margin: 20px auto 15px; }
+.rank_banner h1 { padding:15px 0 0 20px; font-size:30px; color:#fff; line-height: 32px;}
+.rank_banner p { padding:5px 20px; color:#fff; line-height:20px;}
+/*rand-brand*/
+.rank-box { padding:0px 10px 10px 10px;}
+.ol-list { margin-top:15px;}
+.ol-list dt{ border-bottom:2px solid #ededed; line-height:20px; height:20px; color:#999; padding-bottom:3px; position:relative;}
+.ol-list em { display:inline-block;height:20px; line-height:20px; overflow:hidden;}
+.ol-num { display:inline-block; width:35px; padding-right:5px;}
+.ol-brand {display:inline-block;  width:200px; padding-right:15px;}
+.ol-brand span{color: #773b09;}
+.ol-brand span:hover{color: #996600;}
+.ol-hot {display:inline-block;  width:80px; padding-right:20px; white-space:nowrap;}
+.ol-hot span {text-align: center;}
+.ol-hot img { vertical-align:middle;}
+.ol-article {display:inline-block; width:200px;}
+.ol-list dd ol li{ height:20px; line-height:20px; overflow:hidden;padding:7px 0; background:url(http://www.xbiao.com/images/dot/dashed_ed.gif) left top repeat-x; margin-top:-1px;}
+.ol-list dd ol li i { width:35px; padding-right:5px; text-align:center; float:left; color:#999;}
+.ol-list dd ol li i.red { color:#f00;}
+.ol-list dd ol li i.gray { color:#999;}
+.bar { background:url(http://www.xbiao.com/images/rank/bar.png) left center repeat-x; display:inline-block; width:100%; height:20px;}
+
+em {font-style:normal;}
+a {color:#000;text-decoration:none; outline: none;}
+a:hover {color:#996600;text-decoration:none;}
+ol,ul,li {list-style:none}
+body,button,input,select,textarea { font: 12px/1.6 "\5FAE\8F6F\96C5\9ED1",tahoma,arial ; color:#000;}
+body, h1, h2, h3, h4, h5, h6, dl, dt, dd, ul, ol, li, th, td, p, form, input, button, textarea, hr { margin:0; padding:0; }
+
+</style>
+</head>
+<body>
+<div class="section section_list">
+				  	<div class="rank-box rank-brand  ">
+		        <dl class="ol-list">
+		        	<dt><em class="ol-num">排名</em><em class="ol-hot">姓名</em><em class="ol-hot">文章</em><em class="ol-hot">评论</em><em class="ol-hot">点赞</em></dt>
+		            <dd>
+		            	<ol>
+			            	<li th:each="t,tStat:${trophy}">
+			            			
+			            			<i th:if="${tStat.count} le 3" class="red">[(${tStat.count})].</i>
+			            			<i th:if="${tStat.count} gt 3" class="gray">[(${tStat.count})].</i>
+			            			<em class="ol-hot"><span>[(${t['name']})]</span></em>
+			            			<em><span class="ol-hot">[(${t['articleCount']})]</span></em>
+			            			<em><span class="ol-hot">[(${t['commentCount']})]</span></em>
+			            			<em><span class="ol-hot">[(${t['likeCount']})]</span></em>
+			            	</li>
+		            	</ol>
+		            </dd>
+		        </dl>
+		    </div>
+	</div>
+</body>
+</html>

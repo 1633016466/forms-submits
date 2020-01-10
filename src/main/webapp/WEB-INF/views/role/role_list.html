@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="/statics/common/custom.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_common.js"></script>
+</head>
+<body>
+	<table id="dg"></table>
+	<div id="tb">
+		 <a th:each="btn : ${btnList}" th:href="|javascript:${btn.url}|" class="easyui-linkbutton" th:data-options="|iconCls:'${btn.icon}',plain:true|"><span th:text="${btn.permissionName}"></span></a>
+	</div>
+	
+	<div id="authorize_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var nodes = role_frame.window.getSeletId();
+					subNodeId(nodes);
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('authorize_window')
+				}
+			}
+			]"></div>
+			
+	<div id="form_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var form_data = add_user_frame.window.getFormData();
+					subForm(form_data);
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('form_window')
+				}
+			}
+			]"></div>
+</body>
+<script>
+$('#dg').datagrid({
+    url:'/role/data_role_list',
+    toolbar: '#tb',
+    singleSelect:true,
+    rownumbers:true,
+    fitColumns:true,
+    columns:[
+      [{field:'id',title:'ID',width:200,checkbox:true},
+       {field:'roleName',title:'角色名',width:200},
+       {field:'description',title:'描述',width:200},
+       {field:'createTime',title:'创建时间',width:200,
+    	   formatter : function(value){
+               var date = new Date(value);
+               var y = date.getFullYear();
+               var m = date.getMonth() + 1;
+               var d = date.getDate();
+               var time = date.getHours()+':'+date.getMinutes();
+               return y + '-' +m + '-' + d + ' '+time;
+           }   
+       },
+       /* {field:'state',title:'状态',width:200,
+    	   formatter: function(value,row,index){
+				if (row.state == 1){
+					return '启用';
+				}
+				if(row.state == 0){
+					return '禁用';
+				}
+			}         
+       }, */
+    ]],
+});
+
+
+// －－－－－－－－－－ 授权功能 －－－－－－－－－－－
+function  authorize(){
+	var rows = $("#dg").datagrid("getSelections");
+	if(rows == ''){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	$.post("/permission/data_permission_list_by_role_id",{'roleId':rows[0].id},function(data){
+		sessionStorage.permissionIds = data;
+		console.log(sessionStorage.permissionIds);
+	});
+	openWindow('/permission/tree','authorize_window',600,400,'role_frame');
+}
+
+//提交授权 
+function subNodeId(nodes){
+	var ids = '';
+	for(i in nodes){
+		if(ids != '')
+			ids+=','	
+		ids+=nodes[i].id
+	}
+	if(ids == ''){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	close_window('authorize_window');
+	var rows = $("#dg").datagrid("getSelections");
+	$.post("/permission/authorize",{'roleId':rows[0].id,'permissionIds':ids},function(data){
+			$.messager.alert('提示',data.msg);
+			refresh();
+    });
+	
+}
+
+//－－－－－－－－－－ 新增功能 －－－－－－－－－－－
+function add(){
+	sessionStorage.data = '';
+	openWindow_noscroll('p_role_edit','form_window',450,200,'add_user_frame');
+}
+
+function subForm(form_data){
+	if( form_data != false){
+		close_window('form_window');
+		$.post("/role/submit_role_form",form_data,function(data){
+			$.messager.alert('提示',data.msg);
+			refresh();
+		});
+	}
+}
+
+//－－－－－－－－－－ 编辑功能 －－－－－－－－－－－
+function update(){
+	if(!isSelect('dg')){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	var rows_data = $('#dg').datagrid('getSelected')
+	sessionStorage.data = JSON.stringify(rows_data);
+	openWindow_noscroll('p_role_edit','form_window',450,200,'add_user_frame');
+}
+//－－－－－－－－－－ 删除功能 －－－－－－－－－－－
+function del(){
+	$.messager.confirm("提示","确定该操作吗",function(b){
+		if(b){
+			var rows = $("#dg").datagrid("getSelections");
+			if(rows == ''){
+				$.messager.alert('提示','请选择');
+				return false;
+			}
+			$.post("/role/delete",{'id':rows[0].id},function(data){
+				$.messager.alert('提示',data.msg);
+				refresh();
+			});
+		}else{}
+	});
+}
+
+
+function refresh(){
+	$('#dg').datagrid('reload'); 
+}
+
+function close_window(id){
+	$('#'+id).dialog('close');
+}
+
+
+
+</script>
+</html>

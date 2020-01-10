@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="/statics/common/custom.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/vue/vue.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_common.js"></script>
+</head>
+<body>
+	<table id="dg"></table>
+	<div id="tb">
+		<a th:each="btn : ${btnList}" th:href="|javascript:${btn.url}|" class="easyui-linkbutton" th:data-options="|iconCls:'${btn.icon}',plain:true|"><span th:text="${btn.permissionName}"></span></a>
+	</div>
+	
+	<div id="employee_form_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var formData = employee_edit_frame.window.getFormData();
+					subFormData(formData);
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('employee_form_window')
+				}
+			}
+			]"></div>
+</body>
+<script>
+var information_map = new Map();
+var user_map = new Map();
+$('#dg').datagrid({
+    url:'/employee_world/data_employee_world_list',
+    toolbar: '#tb',
+    singleSelect:true,
+    rownumbers:true,
+    fit:true,
+    fitColumns:true,
+    queryParams:{
+    	"state":1
+    },
+    columns:[
+      [{field:'id',checkbox:true},
+       {field:'type',title:'栏目',width:200,
+    	   formatter : function(d){
+               return information_map.get(d);
+           }         
+       },
+       {field:'title',title:'标题',width:200},
+       {field:'createTime',title:'创建时间',width:100},
+       {field:'adminUserId',title:'创建人',width:100,
+    	   formatter : function(d){
+               return user_map.get(d);
+           }            
+       },
+    ]],
+    onBeforeLoad:function(data){
+    	$.post("/dataDic/d_list",{'dicCode':'dic_employee_world'},function(data){
+    		data.forEach(function(v){  
+    			information_map.set(v.dicVal,v.dicKey)
+    		});
+    	});
+    	$.post("/user/findAllUser",function(data){
+    		data.forEach(function(v){  
+    			user_map.set(v.id,v.name)
+    		});
+    	});
+    }
+});
+
+
+function add(){
+	openWindow('/employee_world/edit','employee_form_window',1000,400,'employee_edit_frame');
+}
+
+function edit(){
+	if(!isSelect('dg')){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	var id = getSelectIds('dg');
+	openWindow('/employee_world/edit?id='+id,'employee_form_window',1000,400,'employee_edit_frame');
+}
+
+function subFormData(data){
+	if(data != false){
+		$('#employee_form_window').dialog('close');
+		$.post("/employee_world/saveAndModity",data,function(data){
+			$.messager.alert('提示',data.msg);
+			dg_refresh('dg');
+		});
+	}
+}
+
+//************************************刷新功能***************************************
+function data_refresh(){
+	dg_refresh('dg');
+}
+
+function del(){
+	var ids = getSelectIds('dg');
+	if(ids == ''){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	$.messager.confirm("提示","确定该操作吗",function(b){
+		if(b){
+		$.post("/employee_world/saveAndModity",{"id":ids,"state":0},function(data){
+			$.messager.alert('提示',data.msg);
+			dg_refresh('dg');
+		});
+		}else{}
+	});
+}
+</script>
+</html>

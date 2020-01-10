@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${details.title}"></title>
+    <script type="text/javascript" src="/statics/main/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/statics/main/js/jqslider.js"></script>
+    <link rel="stylesheet" type="text/css" href="/statics/main/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/statics/main/fonts/iconfont.css">
+ 	<style>
+ 		.note p span{
+        	margin-right:20px;
+        }
+ 	</style>
+
+</head>
+<body>
+<div class="news-show">
+        <div class="meta">
+                <h2 th:text="${details.title}"></h2>
+                <div class="info">
+                    <span></span>
+                    <!-- <span><i class="iconfont icon-comment"></i><script type="text/javascript" src="/tools/submit_ajax.ashx?action=view_comment_count&amp;channel_id=1&amp;id=44"></script>0人评论</span>
+                    <span><i class="iconfont icon-view"></i><script type="text/javascript" src="/tools/submit_ajax.ashx?action=view_article_click&amp;channel_id=1&amp;id=44&amp;click=1"></script>4次</span> -->
+                </div>
+                <div class="note">
+                        <p>
+                        	<span th:text="|来源：${details.source}|"></span>
+                        	<span th:text="|发布时间 ：${details.createTime}|"></span>
+                        </p>
+                    </div>
+            </div>
+            	<div class="entry" th:utext="${details.content}">
+                   
+                </div>
+                <!-- <div class="next-box clearfix">
+                        <p class="prev">Last：<a href="news_show.html">Why choose XHYADTO Fans?</a></p>
+                        <p class="next">Next：<a href="news_show.html">Canton Fair Invitation: HALL 11.2, Booth No.:G31-34 H13-16</a></p>
+                    </div> -->
+</div>
+</body>
+</html>

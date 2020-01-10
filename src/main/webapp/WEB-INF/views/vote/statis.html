@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta content="telephone=no" name="format-detection" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>技术部门</title>
+<link href="/statics/vote/css/vote_style.css" rel="stylesheet" type="text/css">
+<link href="/statics/vote/css/statis_style.css" rel="stylesheet" type="text/css">
+<script src="/statics/vote/js/jquery.js" type="text/javascript"></script>
+<script src="/statics/vote/js/index.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+<div class="pneal">
+	<div class="pneals "><a th:href="@{'/vote/list'}">投票</a></div>
+	<div class="pneals active"><a href="#">统计</a></div>
+	<div class="clear"></div>
+</div>
+
+
+<div class="pneanin dome1">
+	<div class="blistheader" th:if="${showAll}">部门</div>
+	<div class="blist" th:if="${showAll}">
+		<ul class="blistin">
+			<li><a th:href="@{'?selectedOrgId=7}">硬件</a></li>
+			<li><a th:href="@{'?selectedOrgId=8}">软件</a></li>
+			<li><a th:href="@{'?selectedOrgId=6}">综合(行政、财务、采购、市场)</a></li>
+		</ul>
+	</div>
+	
+	
+	
+	
+	<th:block th:with="totalVote=${#aggregates.sum(statisList.![votecount])}">
+	<div class="skillbar clearfix " th:each="statis:${statisList}" th:data-percent="${statis.votecount}/${totalVote}*100+'%'">
+		<div class="skillbar-title"><span>[(${statis.name})]</span></div>
+		<div class="skillbar-bar" style="background: #e67e22;"></div>
+		<div class="skill-bar-percent">[(${statis.votecount})]票</div>
+	</div> <!-- End Skill Bar -->
+	</th:block>
+	
+</div>
+</body>
+</html>

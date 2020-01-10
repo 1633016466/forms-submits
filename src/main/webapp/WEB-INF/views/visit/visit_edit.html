@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_validator.js"></script>
+</head>
+<body>
+	    <form id="ff" method="post">
+	    	<input type="hidden" name="id" th:value="${formData?.id}">
+	    	<table cellpadding="5" style="display: block">
+	    		<tr>
+	    			<td>拜访对象:</td>
+	    			<td><input class="easyui-textbox" type="text" name="visitor" data-options="required:true" autocomplete="off" th:value="${formData?.visitor}"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>拜访时间:</td>
+	    			<td>
+	    				<input id="td" name="visitTime" class="easyui-datetimespinner" data-options="formatter:formatter1,parser:parser1,required:true" style="width:173px" th:value="${formData?.visitTime}">
+					</td>
+	    		</tr>
+	    		<tr>
+	    			<td>拜访地点:</td>
+	    			<td>
+	    				<input class="easyui-textbox" type="text"  name="place" autocomplete="off" data-options="required:true"  th:value="${formData?.place}"></input>
+	    			</td>
+	    		</tr>
+	    		<tr>
+	    			<td>备注:</td>
+	    			<td>
+	    				<input class="easyui-textbox" name="visitPurpose" data-options="multiline:true" style="height:60px" th:value="${formData?.visitPurpose}"></input>
+	    			</td>
+	    		</tr>
+	    	</table>
+	    </form>
+</body>
+<script>
+function getFormData(){
+	if($("#ff").form('validate')){
+		return	$("#ff").serialize();
+	}
+	return false;
+}
+
+function formatter1(date){
+	if (!date){return '';}
+	return $.fn.datebox.defaults.formatter.call(this, date);
+}
+function parser1(s){
+	if (!s){return null;}
+	return $.fn.datebox.defaults.parser.call(this, s);
+}
+
+$('#tb').datetimespinner({
+	required: true,
+    showSeconds: true
+})
+</script>
+</html>

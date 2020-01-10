@@ -1,0 +1,521 @@
+body,ul,li,p,div,h2{
+	    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    font: 12px/140% arial, Simsun Font,Helvetica, sans-serif,Verdana,"瀹嬩綋";
+    color: #5a5a5a;
+    margin: 0;
+    background: #fff;
+}
+
+ul li{
+	    list-style: none;
+    margin: 0px;
+}
+a{
+    text-decoration: none;
+}
+.clear{
+	clear: both;
+}
+
+.pull-right{
+	
+	    float: right;
+}
+
+.pull-left{
+	
+	    float: left;
+}
+
+
+.content-list{
+	width:97%;
+    position: relative;
+    margin: 15px 15px 12px 15px;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.nav 
+{
+     width: 100%;    border-bottom:1px rgb(238, 238, 238) solid;
+    margin-bottom: 5px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+.nav .title
+{
+	float: left;
+    color: #4d4d4d;
+    margin-left: 2px;
+    font-size: 22px;
+    margin-top: 5px; 
+}
+.nav img{
+    height: 30px;
+    width: 30px;
+    float: left;
+}
+
+.nav .more
+{  
+	font-size: 15px;
+    color: #4d4d4d;
+    float: right;
+    margin-right: 20px;
+        margin-top: 10px;
+}
+.tab_menu{
+    background-color: #fff;
+    font-family: Microsoft YaHei;
+    font-weight: normal;
+    font-size: 22px;
+    color: #4d4d4d;
+    text-decoration: none;
+    background: url(../images/c71.png) no-repeat;    
+    /* position: absolute;
+    top: -37px; */
+    /* width: 100px; */
+    height: 35px;
+    margin-top:13px;
+    width: 100%;
+}
+
+.active-list{    
+    width:500px;
+    position: relative;
+    overflow: hidden;
+}
+.slide-box {
+	width:100%;
+    position: relative;
+    margin: 0;
+    width: 100%;
+    height: 365px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.slide-box .list-box {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+.slide-box .list-box li {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    filter: alpha:opacity(0);
+}
+.slide-box .list-box li a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.slide-box .list-box li a img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+.slide-box .speed-box {
+    position: absolute;
+    left: 0;
+    bottom: 20px;
+    width: 100%;
+    height: 10px;
+    text-align: center;
+    z-index: 999;
+}
+.slide-box .speed-box .speed-btn a {
+  border: 1.5px solid #999;
+    width: 10px;
+    display: inline-block;
+    margin-right: 6px;
+    height: 10px;
+    border-radius: 50%;
+}
+.slide-box .speed-box .speed-btn a.selected, .slide-box .speed-box .speed-btn a:hover {
+    border-color: #00b2ef;
+}
+.wp-media_content{
+    right: 0px;
+    position: absolute;
+    width: 190px;
+    height: 100%;
+    float: right;
+}
+.wp-media_content .img_over img{
+    width: 100%;
+    height: 100%;margin-top:35px;
+}
+.news-right{   
+	/* min-width: 65%;
+    margin-left: 3%;
+    position: relative;
+    right: 5px;
+    max-width: 70%; */
+    /* width: 56%; */
+    margin-left: 520px;
+    position: absolute;
+    margin-right: 258px;
+
+}
+/* @media screen and (min-width:500px) and (max-width:1200px){
+    .news-right{   
+        width: 53% !important;
+        min-width: 53% !important;
+        max-width:  53% !important;
+    }
+   }
+@media screen  and (width:1600px){
+    .news-right{   
+        width: 65%;
+    }
+   }
+   @media screen and (min-width:1200px) and (max-width:1600px)and (max-width:1400px){
+    .news-right{   
+        width: 60%!important;
+        min-width: 60% !important;
+        max-width:  60% !important;
+    }
+   }
+   @media screen and (min-width:1200px) and (max-width:1680px){
+    .news-right{   
+        width: 66%!important;
+        min-width: 66% !important;
+        max-width:  66% !important;
+    }
+   }
+   @media screen and (min-width:1300px) and (max-width:1400px){
+    .news-right{   
+        width: 60%!important;
+        min-width: 60% !important;
+        max-width:  60% !important;
+    }
+   }
+   @media screen and (min-width:1024px) and (max-width:1280){
+    .news-right{   
+        width: 55%!important;
+        min-width: 55% !important;
+        max-width:  55% !important;
+    }
+   }
+   @media screen and (min-width:768px) and (max-width:1024px){
+    .news-right{   
+        width: 45%!important;
+        min-width: 45% !important;
+        max-width:  45% !important;
+    }
+   } */
+.news-list li{
+	width:100%;
+    position: relative;
+       cursor: pointer;
+    overflow: hidden;  
+     padding: 3px 5px;
+     display: inline-block;
+     height: 26px;
+     line-height: 26px;
+     border-bottom: 1px dashed #c6c6c6;
+
+}
+.news-list li p{
+display: inline-block;
+position: relative;
+width: 100%;
+}
+.news-list li p.summary{
+  color: #666666;
+  line-height: 22px;
+
+}
+
+
+.news-list li a.title{
+	color: #4d4d4d;
+    font-size:15px;
+    width:86%;    
+    display: block;
+    float:left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+.news-list li a:hover{
+	color:#00b2ef;
+}
+
+.news-list li .time{
+    float: right;
+    margin-right: 10px;
+    position: absolute;
+    right: 5px;   
+     font-size: 15px;
+}
+
+.news-tz{
+	width:40%;
+}
+.news-tg{
+	width:58%;
+    display: block;
+	
+}
+
+.news-tg li{
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #efefef;
+    padding-bottom: 4px;
+}
+.news-tg li:hover .title{
+color:#00b2ef;
+}
+
+.news-tg li .time{
+    font-size: 14px;
+    line-height: 24px;
+    height: 24px;
+    color: #666666;
+    position: absolute;
+    width: 12%;
+    right: 0;
+    top: 2px;
+}
+
+.news-tg li .img{
+    width: 20%;
+    height: 85px;
+    position: relative;
+}
+.news-tg li .img img{
+	    width: 100%;
+    height: 100%; 
+}
+.news-tg .pull-right{
+	width:78%;
+}
+
+.news-tg li .title{
+    line-height: 25px;
+    height: 25px;
+    color: #4d4d4d;
+    margin-bottom: 0px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 16px;
+}
+.news-tg li .summary{
+    color: #9a9797;
+    margin-bottom: 4px;
+    font-size:12px;
+    line-height: 20px;
+    margin-top: 5px;
+}
+
+@media screen and (max-width: 1600px) {
+    .active-list {
+        width: 400px;
+    }
+    .slide-box {
+        width: 100%;
+        height: 283px;
+    }
+    .news-right {
+        margin-left: 420px;  
+        margin-right: 215px;
+    }
+    .news-list li a.title{
+        width: 68%;
+    }
+    .news-tg li{
+        padding-bottom: 4px;
+    }
+}
+
+/* 鏂伴椈鍒楄〃椤甸潰 */
+.news{
+margin: 20px 12px;
+width: 99%;
+position: relative;
+}
+.news ul li{
+    display: block;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    overflow: hidden;
+    }
+    .news ul li h2 {
+        padding: 15px 0 5px;
+        font-size: 18px;
+        line-height: 24px;
+        font-weight: normal;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .news ul li h2 a {
+        color: #333;
+        text-decoration: none;
+    }
+    .news ul li .note p {
+        display: block;
+        font-size: 14px;
+        max-height: 84px;
+        line-height: 28px;
+        font-weight: 500;
+        color: #666;
+        overflow: hidden;
+    }
+    .news ul li .note .info {
+        padding-top: 10px;
+        height: 20px;
+        line-height: 20px;
+    }
+    .news li .note .info span {
+        margin-right: 10px;
+        color: #999;
+        font-size: 12px;
+    }
+
+    .news li .note .info span i {
+        margin-right: 3px;
+        font-size: 12px;
+    }.icon-date:before {
+        content: "\e721";
+    }
+    .icon-comment:before {
+        content: "\e7e9";
+    }.icon-view:before {
+        content: "\e61b";
+    }
+    .news li .note a {
+        position: relative;
+        display: block;
+        float: left;
+        margin-right: 16px;
+        width: 118px;
+        height: 118px;
+        border: 1px solid #e8e8e8;
+        font-style: normal;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .news li .note a img{
+        width: 100%;
+        height: 100%;
+    }
+    .news li .note a img:hover{
+        transform: scale(1.1,1.1);
+        -ms-transform: scale(1.1,1.1); /* IE 9 */
+        -moz-transform: scale(1.1,1.1); /* Firefox */
+        -webkit-transform: scale(1.1,1.1); /* Safari 鍜� Chrome */
+        -o-transform: scale(1.1,1.1); /* Opera */
+    }
+
+/* 鏂伴椈鍒楄〃缁撴潫 */
+/* 鏂伴椈璇︽儏 */
+.news-show{
+    margin: 20px 10px;
+    width: 100%;
+}
+.meta {
+    margin: 0;
+    padding: 50px 50px 0 50px;
+}.meta h2 {
+    margin: 0 0 20px;
+    padding: 0;
+    color: #333;
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1em;
+}.meta .info {
+    margin: 0 0 10px;
+}.meta .info span {
+    margin-right: 10px;
+    color: #b0b0b0;
+    font-size: 12px;
+    line-height: 14px;
+}
+.meta .info span i {
+    margin-right: 5px;
+    display: inline-block;
+    font-size: 14px;
+}
+.meta .note {
+    margin-top: 10px;
+    padding: 15px 20px;
+    background: #f5f5f5;
+    line-height: 22px;
+    color: #757575;
+    font-size: 12px;
+}.entry {
+    margin-top: 20px;
+    padding: 0 50px 15px;
+    font-size: 14px;
+    line-height: 2em;
+    word-wrap: break-word;
+}
+
+.entry img{
+    max-width: 100%;
+}
+.clearfix {
+    display: block;
+}
+.next-box {
+    position: relative;
+    padding: 10px 50px 20px;
+    line-height: 20px;
+    color: #444;
+    font-size: 14px;
+}
+.next-box p {
+    display: block;
+    width: 49%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.next-box p.prev {
+    float: left;
+}
+.next-box p.next {
+    float: right;
+}
+.next-box p a {
+    color:#00b2ef;
+}
+
+@media screen and (min-width:500px) and (max-width:1200px){
+	
+	.wp-media_content{
+		display: none;
+	}
+	.news-right {
+		width: 45%;
+	}
+
+}

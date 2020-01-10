@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.formssubmits.mapper.UserMapper">
+	<resultMap type="com.formssubmits.domian.User" id="ResultBaseMapper">
+		<id column="id" property="id" jdbcType="INTEGER"/>
+		<result column="name" property="name" jdbcType="VARCHAR"/>
+		<result column="age" property="age" jdbcType="INTEGER"/>
+		<result column="ent_id" property="entId" jdbcType="INTEGER"/>
+	</resultMap>
+
+
+
+
+	<sql id="select_condition_sql">
+			id,
+			name,
+			age,
+			ent_id
+	</sql>
+	
+	
+	
+	
+	<select id="select" parameterType="com.formssubmits.domian.User" resultMap="ResultBaseMapper">
+		SELECT 
+			<include refid="select_condition_sql"/>
+		FROM 
+			user
+		<where>
+			<if test="id != null and id != '' " >
+				and id = #{id}
+			</if>
+			<if test="name != null and name != '' " >
+				and name = #{name}
+			</if>
+			<if test="age != null" >
+				and age = #{age}
+			</if>
+			<if test="entId != null and entId != '' " >
+				and ent_id = #{entId}
+			</if>
+		</where>
+	</select>
+
+
+
+
+
+	<select id="selectById" resultMap="ResultBaseMapper">
+		SELECT 
+			<include refid="select_condition_sql"/>	
+		FROM 
+			user
+		WHERE 
+			id = #{id}
+	</select>
+
+
+
+
+
+	<insert id="insert" parameterType="com.formssubmits.domian.User">
+		INSERT INTO 
+			user
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null and id != '' " >
+				id,
+			</if>	
+			<if test="name != null and name != '' " >
+				name,
+			</if>	
+			<if test="age != null" >
+				age,
+			</if>
+			<if test="entId != null and entId != '' " >
+				ent_id,
+			</if>	
+		</trim>
+		VALUE	
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null  and  id != ''  " >
+				#{id},
+			</if>	
+			<if test="name != null  and  name != ''  " >
+				#{name},
+			</if>	
+			<if test="age != null" >
+				#{age},
+			</if>
+			<if test="entId != null  and  entId != ''  " >
+				#{entId},
+			</if>	
+	    </trim>
+	</insert>
+
+
+
+
+	<update id="update" parameterType="com.formssubmits.domian.User">
+		UPDATE 
+			user
+		<set>
+			<if test="id != null and id !='' " >
+				id = #{id},
+			</if>	
+			<if test="name != null and name !='' " >
+				name = #{name},
+			</if>	
+			<if test="age != null" >
+				age = #{age},
+			</if>
+			<if test="entId != null and entId !='' " >
+				ent_id = #{entId},
+			</if>	
+		</set>
+		WHERE id = #{id}
+	</update>
+
+
+
+
+
+	<select id = "count"  resultType="int" parameterType="com.formssubmits.domian.User">
+		SELECT 
+			count(1)
+		FROM 
+			user
+		<where>
+			<if test="id != null and id !='' " >
+				and id = #{id}
+			</if>	
+			<if test="name != null and name !='' " >
+				and name = #{name}
+			</if>	
+			<if test="age != null" >
+				and age = #{age}
+			</if>
+			<if test="entId != null and entId !='' " >
+				and ent_id = #{entId}
+			</if>	
+		</where>
+	</select>
+
+	
+	<delete id = "delete"  parameterType="com.formssubmits.domian.User">
+		DELETE 
+			count(1)
+		FROM 
+			user
+		<where>
+			<if test="id != null and id !='' " >
+				and id = #{id}
+			</if>	
+			<if test="name != null and name !='' " >
+				and name = #{name}
+			</if>	
+			<if test="age != null" >
+				and age = #{age}
+			</if>
+			<if test="entId != null and entId !='' " >
+				and ent_id = #{entId}
+			</if>	
+		</where>
+	</delete>
+
+
+
+	<delete id="deleteById">
+		DELETE
+		FROM
+			user
+		WHERE
+			id = #{id}
+	</delete>
+
+
+</mapper>

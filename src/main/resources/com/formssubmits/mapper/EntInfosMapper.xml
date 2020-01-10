@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.formssubmits.mapper.EntInfosMapper">
+	<resultMap type="com.formssubmits.domian.EntInfos" id="ResultBaseMapper">
+		<id column="ent_id" property="entId" jdbcType="INTEGER"/>
+		<result column="ent_name" property="entName" jdbcType="VARCHAR"/>
+		<result column="ent_info" property="entInfo" jdbcType="VARCHAR"/>
+		<result column="org_id" property="orgId" jdbcType="INTEGER"/>
+		<result column="user_id" property="userId" jdbcType="INTEGER"/>
+	</resultMap>
+
+
+
+
+	<sql id="select_condition_sql">
+			ent_id,
+			ent_name,
+			ent_info,
+			org_id,
+			user_id
+	</sql>
+	
+	
+	
+	
+	<select id="findAll" parameterType="com.formssubmits.domian.EntInfos" resultMap="ResultBaseMapper">
+		SELECT 
+			<include refid="select_condition_sql"/>
+		FROM 
+			ent_infos
+		<where>
+			<if test="entId != null and entId != '' " >
+				and ent_id = #{entId}
+			</if>
+			<if test="entName != null and entName != '' " >
+				and ent_name = #{entName}
+			</if>
+			<if test="entInfo != null and entInfo != '' " >
+				and ent_info = #{entInfo}
+			</if>
+			<if test="orgId != null and orgId != '' " >
+				and org_id = #{orgId}
+			</if>
+			<if test="userId != null and userId != '' " >
+				and user_id = #{userId}
+			</if>
+		</where>
+	</select>
+
+
+
+
+
+	<select id="selectById" resultMap="ResultBaseMapper">
+		SELECT 
+			<include refid="select_condition_sql"/>	
+		FROM 
+			ent_infos
+		WHERE 
+			id = #{id}
+	</select>
+
+
+
+
+
+	<insert id="insert" parameterType="com.formssubmits.domian.EntInfos">
+		INSERT INTO 
+			ent_infos
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="entId != null and entId != '' " >
+				ent_id,
+			</if>	
+			<if test="entName != null and entName != '' " >
+				ent_name,
+			</if>	
+			<if test="entInfo != null and entInfo != '' " >
+				ent_info,
+			</if>	
+			<if test="orgId != null and orgId != '' " >
+				org_id,
+			</if>	
+			<if test="userId != null and userId != '' " >
+				user_id,
+			</if>	
+		</trim>
+		VALUE	
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="entId != null  and  entId != ''  " >
+				#{entId},
+			</if>	
+			<if test="entName != null  and  entName != ''  " >
+				#{entName},
+			</if>	
+			<if test="entInfo != null  and  entInfo != ''  " >
+				#{entInfo},
+			</if>	
+			<if test="orgId != null  and  orgId != ''  " >
+				#{orgId},
+			</if>	
+			<if test="userId != null  and  userId != ''  " >
+				#{userId},
+			</if>	
+	    </trim>
+	</insert>
+
+
+
+
+	<update id="update" parameterType="com.formssubmits.domian.EntInfos">
+		UPDATE 
+			ent_infos
+		<set>
+			<if test="entId != null and entId !='' " >
+				ent_id = #{entId},
+			</if>	
+			<if test="entName != null and entName !='' " >
+				ent_name = #{entName},
+			</if>	
+			<if test="entInfo != null and entInfo !='' " >
+				ent_info = #{entInfo},
+			</if>	
+			<if test="orgId != null and orgId !='' " >
+				org_id = #{orgId},
+			</if>	
+			<if test="userId != null and userId !='' " >
+				user_id = #{userId},
+			</if>	
+		</set>
+		WHERE id = #{id}
+	</update>
+
+
+
+
+
+	<select id = "count"  resultType="int" parameterType="com.formssubmits.domian.EntInfos">
+		SELECT 
+			count(1)
+		FROM 
+			ent_infos
+		<where>
+			<if test="entId != null and entId !='' " >
+				and ent_id = #{entId}
+			</if>	
+			<if test="entName != null and entName !='' " >
+				and ent_name = #{entName}
+			</if>	
+			<if test="entInfo != null and entInfo !='' " >
+				and ent_info = #{entInfo}
+			</if>	
+			<if test="orgId != null and orgId !='' " >
+				and org_id = #{orgId}
+			</if>	
+			<if test="userId != null and userId !='' " >
+				and user_id = #{userId}
+			</if>	
+		</where>
+	</select>
+
+	
+	<delete id = "delete"  parameterType="com.formssubmits.domian.EntInfos">
+		DELETE 
+			count(1)
+		FROM 
+			ent_infos
+		<where>
+			<if test="entId != null and entId !='' " >
+				and ent_id = #{entId}
+			</if>	
+			<if test="entName != null and entName !='' " >
+				and ent_name = #{entName}
+			</if>	
+			<if test="entInfo != null and entInfo !='' " >
+				and ent_info = #{entInfo}
+			</if>	
+			<if test="orgId != null and orgId !='' " >
+				and org_id = #{orgId}
+			</if>	
+			<if test="userId != null and userId !='' " >
+				and user_id = #{userId}
+			</if>	
+		</where>
+	</delete>
+
+
+
+	<delete id="deleteById">
+		DELETE
+		FROM
+			ent_infos
+		WHERE
+			id = #{id}
+	</delete>
+
+
+</mapper>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="/statics/common/custom.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_common.js"></script>
+</head>
+<body>
+	<table id="dg" border="1">
+		<tr>
+			<td>网吧名称</td>
+			<td>网吧信息</td>
+			<td>网吧设备</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>1</td>
+			<td>1</td>
+		</tr>
+	</table>
+	<div id="tb">
+		<a th:each="btn : ${btnList}" th:href="|javascript:${btn.url}|" class="easyui-linkbutton" th:data-options="|iconCls:'${btn.icon}',plain:true|"><span th:text="${btn.permissionName}"></span></a>
+	</div>
+	
+	
+	<div id="add_dic_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var formData = add_dic_frame.getFormData();
+					subFormData(formData);
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('add_dic_window')
+				}
+			}
+			]"></div>
+			
+			<form action="/submit" enctype="multipart/form-data" method="post">
+				<table border="1">
+					<tr>
+						<td><span>username</span></td>
+						<td><input type="text" value="username" name="name" /></td>
+					</tr>
+					<tr>
+						<td><span>文件上传</span></td>
+						<td><input type="file" name="file" /></td>
+					</tr>
+					<tr>
+						<td><!-- <input type="submit" value="提交" id="submits" /> --><button id="submits">提交</button></td>
+					</tr>
+				</table>
+			</form>
+</body>
+<script>
+
+$(function(){
+	$('#submits').on('click',function(){
+		$('#forms').submit();
+	})
+})
+
+function addDic(){
+	openWindow('/dataDic/p_edit','add_dic_window',450,330,'add_dic_frame');
+}
+
+function update(){
+	if(!isSelect('dg')){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	var rows_data = $('#dg').datagrid('getSelected')
+	rows_data.isEdit = true;
+	sessionStorage.data = JSON.stringify(rows_data);
+	openWindow('/dataDic/p_edit','add_dic_window',450,330,'add_dic_frame');
+}
+
+function subFormData(form_data){
+	if(form_data != false){
+		$.post("/dataDic/editDic",form_data,function(data){
+			$.messager.alert('提示',data.msg);
+		});
+		close_window('add_dic_window')
+		dg_refresh('dg');
+	}
+}
+
+function del(){
+	$.messager.confirm("提示","确定该操作吗",function(b){
+		if(b){
+			var rows = $("#dg").datagrid("getSelections");
+			if(rows == ''){
+				$.messager.alert('提示','请选择');
+				return false;
+			}
+			$.post("/dataDic/update",{'id':rows[0].id,'state':0},function(data){
+				$.messager.alert('提示',data.msg);
+				dg_refresh('dg');
+			});
+		}else{}
+	});
+}
+
+</script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_validator.js"></script>
+	<style>
+		.panel-body{
+			color: #000;
+		}
+	</style>
+</head>
+<body>
+	    <form id="ff" method="post" style="color:#000;">
+	    	<input type="hidden" name="id" th:value="${userInfo?.id}">
+	    	<fieldset>
+	    	<legend>个人信息</legend>
+	    	<table cellpadding="5" style="display: block;">
+	    		<tr>
+	    			<td>姓名:</td>
+	    			<td><input class="easyui-textbox" type="text" name="name" data-options="required:true,validType:['chinese','length[2,4]']" autocomplete="off" th:value="${userInfo?.name}"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>手机:</td>
+	    			<td><input class="easyui-textbox" type="text" name="phone" data-options="validType:['mobile']" autocomplete="off" th:value="${userInfo?.phone}"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>性别:</td>
+	    			<td>
+	    				<input id="sex" name="sex">
+	    			</td>
+	    		</tr>
+	    	</table>
+	    	</fieldset>
+	    	<div style="text-align:center;padding:5px">
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="modifUserInfo()">修改</a>
+	    	</div>
+	    	</form>
+	    	
+	    	<form id="ff1" method="post" style="color:#000;">
+	    	<input type="hidden" name="id" th:value="${userInfo?.id}">
+	    	<fieldset>
+	    	<legend>重置密码</legend>
+	    	<table cellpadding="5" style="display: block;">
+	    		<tr >
+	    			<td>新密码:</td>
+	    			<td><input class="easyui-textbox" type="password"  name="password" autocomplete="off" data-options="required:true,validType:['length[6,16]']"></input>
+	    			</td>
+	    		</tr>
+	    		<tr>
+	    			<td>确认密码:</td>
+	    			<td><input class="easyui-textbox" type="password" name="password1" autocomplete="off" data-options="required:true,validType:['length[6,16]']"></input>
+	    			</td>
+	    		</tr>
+	    	</table>
+	    	</fieldset>
+	    	<div style="text-align:center;padding:5px">
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="modifPwd()">修改</a>
+	    	</div>
+	    	</form>
+	    	
+	    
+</body>
+<script th:inline="javascript">
+function modifPwd(){
+	if($("#ff1").form('validate')){
+		var pwd = $("input[name='password']").val();
+		var pwd1 = $("input[name='password1']").val();
+		if(pwd != pwd1){
+			$.messager.alert('提示',"密码两次输入不一致");
+			return;
+		}
+		$.post("/user/sub_user_form",$("#ff1").serialize(),function(data){
+			if(data.code == 0);
+				$.messager.alert('提示',"用户信息修改成功,重新登录生效");
+		});
+	}
+	return false;
+}
+
+function modifUserInfo(){
+	if($("#ff").form('validate')){
+		$.post("/user/sub_user_form",$("#ff").serialize(),function(data){
+			if(data.code == 0);
+				$.messager.alert('提示',"用户信息修改成功,重新登录生效");
+		});
+	}
+	return;
+}
+
+$("#sex").combobox({
+    url: "/dataDic/d_list?dicCode=dic_sex",
+    valueField: 'dicVal',
+    textField: 'dicKey',
+    panelHeight: "auto",
+    editable: false,
+    onLoadSuccess: function (){
+    	$("#sex").combobox('setValue',[[${userInfo?.sex}]]);
+    }
+});
+</script>
+</html>

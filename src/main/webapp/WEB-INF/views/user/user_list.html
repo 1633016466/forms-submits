@@ -1,0 +1,305 @@
+ <!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="/statics/common/custom.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_common.js"></script>
+</head>
+<body>
+	<table id="dg"></table>
+	<div id="tb">
+		<a th:each="btn : ${btnList}" th:href="|javascript:${btn.url}|" class="easyui-linkbutton" th:data-options="|iconCls:'${btn.icon}',plain:true|"><span th:text="${btn.permissionName}"></span></a>
+	</div>
+	<div id="pp" style="background:#efefef;"></div>
+	<div id="assign_roles_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var role_ids = user_frame.window.getSeletId();
+					subRoleIds(role_ids);
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('assign_roles_window')
+				}
+			}
+			]"></div>
+			
+	<div id="auto_create_user_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var formData = auto_create_user_frame.getFormData();
+					subFormDataForAutoCreate(formData);
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('auto_create_user_window')
+				}
+			}
+			]"></div>
+			
+	<div id="add_user_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var formData = add_user_frame.window.getFormData();
+					subFormData(formData,'add_user_window');
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('add_user_window')
+				}
+			}
+			]"></div>
+			
+	<div id="edit_user_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var formData = edit_user_frame.window.getFormData();
+					subFormData(formData,'edit_user_window');
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('edit_user_window')
+				}
+			}
+			]"></div>
+			
+		<div id="rest_pwd_window" data-options="
+		buttons:[{
+			text:'确定',
+			iconCls:'icon-ok',
+			handler:function(){
+				var formData = rest_pwd_frame.window.getFormData();
+				subFormDataForRestPwd(formData);
+			}
+		},
+		{
+			text:'取消',
+			iconCls:'icon-cancel',
+			handler:function(){
+				close_window('rest_pwd_window')
+			}
+		}
+		]"></div>
+</body>
+<script>
+$(function(){
+	var occupation_map = new Map();
+	var sex_map = new Map();
+	var user_map = new Map();
+	$('#dg').datagrid({
+	    url:'/user/data_user_list',
+	    toolbar: '#tb',
+	    singleSelect:true,
+	    rownumbers:true,
+	    fitColumns:true,
+	    pagination: true,
+	    columns:[
+	      [{field:'id',checkbox:true},
+	       {field:'username',title:'用户名',width:200},
+	       {field:'name',title:'姓名',width:200},
+	       {field:'sex',title:'性别',width:200,
+	    	   formatter : function(d){
+	    		   return sex_map.get(d);
+               }      
+	       },
+	       {field:'occupation',title:'职位',width:200,
+	    	   formatter : function(d){
+                   return occupation_map.get(d);
+               }         
+	       },
+	       {field:'orgName',title:'部门',width:200},
+	       {field:'phone',title:'电话',width:200},
+	       {field:'createTime',title:'创建时间',width:200,
+	    	   formatter : function(value){
+                   var date = new Date(value);
+                   var y = date.getFullYear();
+                   var m = date.getMonth() + 1;
+                   var d = date.getDate();
+                   var time = date.getHours()+':'+date.getMinutes();
+                   return y + '-' +m + '-' + d + ' '+time;
+               }   
+	       },
+	    ]],
+	    onBeforeLoad:function(data){
+	    	$.post("/dataDic/d_list",{'dicCode':'dic_occupation'},function(data){
+	    		data.forEach(function(v){  
+	    			occupation_map.set(v.dicVal,v.dicKey)
+	    		});
+        	});
+	    	$.post("/dataDic/d_list",{'dicCode':'dic_sex'},function(data){
+	    		data.forEach(function(v){  
+	    			sex_map.set(v.dicVal,v.dicKey)
+	    		});
+        	});
+	    }
+	});
+	
+	var pager = $("#dg").datagrid("getPager"); 
+	pager.pagination({ 
+	   layout:['list','sep','first','prev','links','next','last','sep','refresh'],
+	   onSelectPage:function (pageNo, pageSize) {
+			getData(pageNo,pageSize);
+	   } 
+	}); 
+});
+
+function getData(pageNumber, pageSize) {
+    $.post("/user/data_user_list",{'page':pageNumber,'rows':pageSize},function(data){
+		$("#dg").datagrid("loadData", data);
+	});
+}
+
+//************************************角色分配***************************************
+
+//打开角色分配窗口
+function assign_roles(){
+	var rows = $("#dg").datagrid("getSelections");
+	if(rows == ''){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	$.post("/role/getUserRoleId",{'userId':rows[0].id},function(data){
+		sessionStorage.roleId = data;
+	});
+	openWindow('/role/list_for_assign_roles','assign_roles_window',600,400,'user_frame');
+}
+
+//拿到角色id并提交
+function subRoleIds(nodes){
+	$('#assign_roles_window').dialog('close');
+	var rows = $("#dg").datagrid("getSelections");
+	var ids = '';
+	for(i in nodes){
+		if(ids != '')
+			ids+=','	
+		ids+=nodes[i].id
+	}
+	$.post("/role/assign_roles",{'userId':rows[0].id,'roleIds':ids},function(data){
+		$.messager.alert('提示',data.msg);
+	});
+}
+
+//************************************添加用户***************************************
+
+//打开添加用户窗口
+function add_user(){
+	openWindow('/user/p_user_edit','add_user_window',450,400,'add_user_frame');
+}
+
+//拿到表单数据并提交
+function subFormData(form_data,window_id){
+	if(form_data != false){
+		$.post("/user/sub_user_form",form_data,function(data){
+			$.messager.alert('提示',data.msg);
+			dg_refresh('dg');
+		});
+		close_window(window_id);
+	}
+}
+
+//************************************自动创建用户***************************************
+
+//自动创建用户
+function auto_create_user(){
+	openWindow('/user/p_user_auto_create','auto_create_user_window',450,350,'auto_create_user_frame');
+}
+
+//拿到表单数据并提交
+function subFormDataForAutoCreate(form_data){
+	if(form_data != false){
+		$.post("/user/autoCreateAdminUser",form_data,function(data){
+			$.messager.alert('提示',data.msg);
+			dg_refresh('dg');
+		});
+		close_window('auto_create_user_window')
+	}
+}
+
+
+//************************************编辑用户***************************************
+
+//打开编辑用户窗口
+function edit_user(){
+	if(!isSelect('dg')){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	var rows = $('#dg').datagrid('getSelected')
+	openWindow_noscroll('/user/p_user_edit?id='+rows.id+'&operaType=edit','edit_user_window',450,400,'edit_user_frame');
+}
+
+//************************************重置密码***************************************
+
+//打开编辑用户窗口
+function restUserPwd(){
+	if(!isSelect('dg')){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	var rows = $('#dg').datagrid('getSelected')
+	openWindow_noscroll('/user/p_user_edit?id='+rows.id+'&operaType=restPwd','rest_pwd_window',450,180,'rest_pwd_frame');
+}
+
+function subFormDataForRestPwd(form_data){
+	if(form_data != false){
+		$.post("/user/resetUserPwd",form_data,function(data){
+			$.messager.alert('提示',data.msg);
+			dg_refresh('dg');
+		});
+		close_window('rest_pwd_window')
+	}
+}
+
+//************************************删除用户***************************************
+
+//打开编辑用户窗口
+function del(){
+	
+			var rows = $("#dg").datagrid("getSelections");
+			if(rows == ''){
+				$.messager.alert('提示','请选择');
+				return false;
+			}
+			$.messager.confirm("提示","确定该操作吗",function(b){
+				if(b){
+			$.post("/user/update",{'id':rows[0].id,'state':0},function(data){
+				$.messager.alert('提示',data.msg);
+				dg_refresh('dg');
+			});
+		}else{}
+	});
+}
+
+//************************************刷新功能***************************************
+function data_refresh(){
+	dg_refresh('dg');
+}
+</script>
+</html>

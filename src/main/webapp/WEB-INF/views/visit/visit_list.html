@@ -1,0 +1,189 @@
+ <!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="/statics/common/custom.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_common.js"></script>
+</head>
+<body>
+	<table id="dg"></table>
+	<div id="tb">
+		<div style="display: none;margin: 5px 0px 5px 5px;">
+			月份: 
+			<input class="easyui-datetimespinner" name="visitTime" data-options="formatter:formatter2,parser:parser2,selections:[[0,4],[5,7]]" style="width:180px;">
+			用户: 
+			<input name="adminUserId" id="user_list" >
+			<a href="javascript:search_btn();" class="easyui-linkbutton" iconCls="icon-search">查询</a>
+		</div>
+		<div>
+			<a th:each="btn : ${btnList}" th:href="|javascript:${btn.url}|" class="easyui-linkbutton" th:data-options="|iconCls:'${btn.icon}',plain:true|"><span th:text="${btn.permissionName}"></span></a>
+		</div>
+	</div>
+	
+	<div id="pp" style="background:#efefef;"></div>
+	<div id="visit_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var formData = visit_frame.getFormData();
+					subFormData(formData,'visit_window');
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('visit_window')
+				}
+			}
+			]"></div>
+</body>
+<script>
+var user_map = new Map();
+$(function(){
+	var user_map = new Map();
+	$('#dg').datagrid({
+	    url:'/visitRecord/listVisitRecord',
+	    toolbar: '#tb',
+	    singleSelect:true,
+	    rownumbers:true,
+	    fitColumns:true,
+	    pagination: true,
+	    columns:[
+	    [
+	       {field:'id',hidden:true},
+	       {field:'visitor',title:'拜访对象',width:200},
+	       {field:'visitTime',title:'拜访时间',width:200},
+	       {field:'place',title:'拜访地点',width:200},
+	       {field:'visitPurpose',title:'备注',width:200},
+	       {field:'adminUserId',title:'拜访人',width:200,
+	    	   formatter : function(d){
+	               return user_map.get(d);
+	           }            
+	       },
+	       {field:'createTime',title:'登记时间',width:200},
+	    ]],
+	    onBeforeLoad:function(data){
+	    	$.post("/user/findAllUser",function(data){
+	    		data.forEach(function(v){  
+	    			user_map.set(v.id,v.name)
+	    		});
+	    	});
+	    }
+	});
+	
+	var pager = $("#dg").datagrid("getPager"); 
+	pager.pagination({ 
+	   layout:['list','sep','first','prev','links','next','last','sep','refresh'],
+	   onSelectPage:function (pageNo, pageSize) {
+			getData(pageNo,pageSize);
+	   } 
+	}); 
+});
+
+function getData(pageNumber, pageSize) {
+    $.post("/visitRecord/listVisitRecord",{'page':pageNumber,'rows':pageSize,'visitTime':$("input[name='visitTime']").val(),'adminUserId':$("input[name='adminUserId']").val()},function(data){
+		$("#dg").datagrid("loadData", data);
+	});
+}
+
+//************************************添加用户***************************************
+
+//打开添加用户窗口
+function add(){
+	openWindow('/visitRecord/edit','visit_window',450,400,'visit_frame');
+}
+
+//拿到表单数据并提交
+function subFormData(form_data,window_id){
+	if(form_data != false){
+		$.post("/visitRecord/updateOrSava",form_data,function(data){
+			$.messager.alert('提示',data.msg);
+			dg_refresh('dg');
+		});
+		close_window(window_id);
+	}
+}
+//************************************编辑用户***************************************
+
+//打开编辑用户窗口
+function edit(){
+	if(!isSelect('dg')){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	var rows = $('#dg').datagrid('getSelected')
+	openWindow_noscroll('/visitRecord/edit?id='+rows.id,'visit_window',450,400,'visit_frame');
+}
+
+//************************************删除用户***************************************
+
+//打开编辑用户窗口
+function del(){
+	
+			var rows = $("#dg").datagrid("getSelections");
+			if(rows == ''){
+				$.messager.alert('提示','请选择');
+				return false;
+			}
+			$.messager.confirm("提示","确定该操作吗",function(b){
+				if(b){
+			$.post("/visitRecord/delete",{'id':rows[0].id,'state':0},function(data){
+				$.messager.alert('提示',data.msg);
+				dg_refresh('dg');
+			});
+		}else{}
+	});
+}
+
+//************************************刷新功能***************************************
+function data_refresh(){
+	dg_refresh('dg');
+}
+
+$("#user_list").combobox({
+    url: "/visitRecord/findVisitUser",
+    valueField: 'id',
+    textField: 'name',
+    panelHeight: "auto",
+    editable:true,
+    panelMaxHeight: 150
+});
+
+function formatter2(date){
+	if (!date){return '';}
+	var y = date.getFullYear();
+	var m = date.getMonth() + 1;
+	return y + '-' + (m<10?('0'+m):m);
+}
+function parser2(s){
+	if (!s){return null;}
+	var ss = s.split('-');
+	var y = parseInt(ss[0],10);
+	var m = parseInt(ss[1],10);
+	if (!isNaN(y) && !isNaN(m)){
+		return new Date(y,m-1,1);
+	} else {
+		return new Date();
+	}
+}
+
+function search_btn(){
+	$.post("/visitRecord/search",{'visitTime':$("input[name='visitTime']").val(),'adminUserId':$("input[name='adminUserId']").val()},function(data){
+		$("#dg").datagrid("loadData", data);
+	});
+}
+
+function search(){
+	$('#tb').find('div:eq(0)').toggle();
+}
+</script>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="/statics/common/custom.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_common.js"></script>
+</head>
+<body>
+	<table id="tt"></table>
+	<div id="tb">
+		<div id="tb">
+			<a th:each="btn : ${btnList}" th:href="|javascript:${btn.url}|" class="easyui-linkbutton" th:data-options="|iconCls:'${btn.icon}',plain:true|"><span th:text="${btn.permissionName}"></span></a>
+		</div>
+	</div>
+	
+	<div id="add_org_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var form_data = add_org_frame.window.getFormData();
+					subFormData(form_data);
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('add_org_window')
+				}
+			}
+			]"></div>
+</body>
+<script>
+$('#tt').treegrid({
+    url:'/org/d_list',
+    idField:'id',
+    treeField:'text',
+    toolbar: '#tb',
+    fitColumns:true,
+    fit:true,
+    columns:[
+	   [{field:'id',title:'ID',width:200,hidden:true},
+       {field:'text',title:'部门',width:200},
+    ]]
+});
+
+
+function add(){
+	var node = $('#tt').treegrid('getSelected')
+	var params = {};
+	if(node != null){
+			params = {parentName:node.text,pid:node.id};
+	}else{
+		params = {parentName:'/',pid:0}; //如果没有选择默认为根目录
+	}
+	sessionStorage.param = JSON.stringify(params);
+	openWindow_noscroll('/org/p_edit','add_org_window',450,200,'add_org_frame');
+}
+
+function del(){
+	var node = $('#tt').treegrid('getSelected')
+	if(node == null){
+		$.messager.alert('提示',"请选择");
+		return;
+	}
+	$.messager.confirm("提示","确定该操作吗",function(b){
+		if(b){
+			var rows = $('#tt').treegrid("getChildren",node.id)
+			if(rows.length > 0){
+				$.messager.alert('提示',"请删除该节点下面的所有子节点后再进行此操作");
+				return;
+			}
+			$.post("/org/editOrg",{"id":node.id,"state":0},function(data){
+				tg_refresh('tt');
+				$.messager.alert('提示',data.msg);
+			});
+		}else{}
+	});
+}
+
+function subFormData(form_data){
+	if(form_data != false){
+		$.post("/org/editOrg",form_data,function(data){
+			tg_refresh('tt');
+			$.messager.alert('提示',data.msg);
+			close_window('add_org_window')
+		});
+	}
+}
+
+</script>
+</html>

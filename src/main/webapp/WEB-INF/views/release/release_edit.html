@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_validator.js"></script>
+	<script charset="utf-8" src="/statics/kindeditor/kindeditor-all-min.js"></script>
+	<script charset="utf-8" src="/statics/kindeditor/lang/zh-CN.js"></script>
+	
+</head>
+<body>
+	    <form id="ff" method="post">
+	    	<input class="easyui-textbox"  type="hidden" name="id" autocomplete="off" th:value="${formData?.id}" ></input>
+	    	<table cellpadding="5" style="display: block">
+	    		<tr>
+	    			<td>来源</td>
+	    			<td><input class="easyui-textbox"  type="text" name="source" autocomplete="off" th:value="${formData?.source}"  data-options="required:true"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>标题</td>
+	    			<td><input class="easyui-textbox" style="width:500px;"  type="text" name="title" autocomplete="off"  th:value="${formData?.title}" data-options="required:true"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>发布栏目 </td>
+	    			<td>
+	    				<input name="type" id="type" data-options="required:true">
+	    			</td>
+	    		</tr>
+	    		<tr>
+	    			<td>内容 </td>
+	    			<td id="content_flag">
+	    				<textarea id="editor_id" style="width:700px;height:300px;">[[${formData?.content}]]</textarea>
+					</td>
+	    		</tr>
+	    		<tr id="flag_examine" th:if="${editType} eq 'examine'">
+	    			<td>审核</td>
+	    			<td>
+	    				<input name="reviewState" id="reviewState" data-options="required:true">
+	    			</td>
+	    		</tr>
+	    	</table>
+	    </form>
+</body>
+<script>
+$("#type").combobox({
+    url: "/dataDic/d_list?dicCode=dic_information",
+    valueField: 'dicVal',
+    textField: 'dicKey',
+    panelHeight: "auto",
+    editable: false,
+    onLoadSuccess: function (){
+    	$("#type").combobox('setValue',[(${formData?.type})]);
+    }
+});
+
+$("#reviewState").combobox({
+    url: "/dataDic/d_list?dicCode=dic_examine_type",
+    valueField: 'dicVal',
+    textField: 'dicKey',
+    panelHeight: "auto",
+    editable: false,
+});
+
+function getFormData(){
+	if($("#ff").form('validate')){
+		var id = $("input[name='id']").val();
+		var source = $("input[name='source']").val();
+		var title = $("input[name='title']").val();
+		var type = $("input[name='type']").val();
+		var reviewState = $("#reviewState").val();
+		return {"id":id,"content":editor.html(),"title":title,"source":source,"type":type,"reviewState":reviewState == undefined ?0:reviewState};
+	}
+	return false;
+}
+KindEditor.ready(function(K) {
+    window.editor = K.create('#editor_id',{
+    	items: [ "preview","source", "|", "undo", "redo", "|", "print",  "cut", "copy", "paste", "plainpaste", "wordpaste",
+    	        "|", "justifyleft", "justifycenter", "justifyright", "justifyfull", "insertorderedlist", "insertunorderedlist", "indent", "outdent", "subscript", "superscript", "clearhtml", "quickformat", "selectall", "|", "fullscreen", "/", "formatblock", "fontname", "fontsize", "|", "forecolor", "hilitecolor", "bold", "italic", "underline", "strikethrough", "lineheight", "removeformat", "|", "table", "hr", "emoticons", "pagebreak", "link", "unlink"]
+
+    
+    });
+});
+</script>
+</html>

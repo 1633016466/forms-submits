@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>后台登录</title>
+	<meta name="renderer" content="webkit">	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">	
+	<meta name="apple-mobile-web-app-capable" content="yes">	
+	<meta name="format-detection" content="telephone=no">	
+	<!-- load css -->
+	<link rel="stylesheet" type="text/css" href="/statics/login/css/login.css" media="all">
+	<style>
+		.layui-login-text{
+			height: 80px;
+		}
+		.layui-login-text p{
+			font-size:5px;
+		}
+	</style>
+</head>
+<body>
+<div class="layui-canvs"></div>
+<div class="layui-layout layui-layout-login">
+	<h1>
+		 <strong>湖南巴图尔科技</strong>
+		 <span style="font-size:18px;">HUNAN BATUER</span>
+		 <!-- <em>hunan Batuer</em> -->
+	</h1>
+	<div class="layui-user-icon larry-login">
+		 <input type="text" placeholder="账号" id="username" class="login_txtbx"/>
+	</div>
+	<div class="layui-pwd-icon larry-login">
+		 <input type="password" placeholder="密码" id="password" class="login_txtbx"/>
+	</div>
+    <!-- <div class="layui-val-icon larry-login">
+    	<div class="layui-code-box">
+    		<input type="text" id="code" name="code" placeholder="验证码" maxlength="4" class="login_txtbx">
+            <img src="picture/verifyimg.png" alt="" class="verifyImg" id="verifyImg" onClick="javascript:this.src='xxx'+Math.random();">
+    	</div>
+    </div> -->
+    <div class="layui-submit larry-login">
+    	<input type="button" value="立即登录" class="submit_btn"/>
+    </div>
+    <div class="layui-login-text">
+    	<p><img id="float_img_1281" class="float_in_img J_defImage " src="//17759478.s21i.faiusr.com/4/ABUIABAEGAAgnqmG4gUo8IfAZDAUOBQ.png" alt="ABUIABAEGAAgnqmG4gUo8IfAZDAUOBQ" style="height: 12px;">
+    	湘公网安备 43011102001672号&nbsp;&nbsp;湘ICP备18022470号</p>
+    	<p>©2020 湖南巴图尔科技有限公司版权所有</p>
+    </div>
+</div>
+<script type="text/javascript" src="/statics/jquery/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/statics/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="/statics/layui/layui.all.js"></script>
+<script type="text/javascript" src="/statics/login/js/login.js"></script>
+<script type="text/javascript" src="/statics/login/js/jparticle.jquery.js"></script>
+<script type="text/javascript">
+$(function(){
+	if(window !=top){  
+		top.location.href = location.href;  
+	} 
+	
+	$(".layui-canvs").jParticle({
+		background: "#1c1c1c",
+		color: "#E6E6E6"
+	});
+	
+	
+	$(".submit_btn").click(function(){
+		if($("#username").val() == ''){
+			layer.tips('请输入用户名', '#username', {
+				   tips: [2, '#78BA32']
+			});
+			return;
+		}
+		
+		if($("#password").val() == ''){
+			layer.tips('请输入密码', '#password', {
+				   tips: [2, '#78BA32']
+			});
+			return;
+		}
+	   $.ajax({ url: "/admin/login",type:"post",contentType:"application/x-www-form-urlencoded",data:{"username":$("#username").val(),"password":$("#password").val()},success: function(data){
+		   console.log(data);
+		   if(data.code == "0")
+		    location.href="/main/index";
+		   else
+			layer.msg(data.msg);   
+	   }});
+	});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+		<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="/statics/common/custom.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_common.js"></script>
+</head>
+<body>
+	<table id="tt"></table>
+	<div id="tb">
+		<div id="tb">
+			<a th:each="btn : ${btnList}" th:href="|javascript:${btn.url}|" class="easyui-linkbutton" th:data-options="|iconCls:'${btn.icon}',plain:true|"><span th:text="${btn.permissionName}"></span></a>
+		</div>
+	</div>
+	
+	<div id="add_permission_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var form_data = add_permission_frame.window.getFormData();
+					subFormData(form_data);
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('add_permission_window')
+				}
+			}
+			]"></div>
+</body>
+<script>
+$('#tt').treegrid({
+    url:'/permission/data_permission_tree',
+    idField:'id',
+    treeField:'text',
+    toolbar: '#tb',
+    fitColumns:true,
+    fit:true,
+    columns:[
+	   [{field:'id',title:'ID',width:200,hidden:true},
+	   {field:'parentId',width:200,hidden:true},
+       {field:'text',title:'名称',width:200},
+       {field:'resourceType',title:'类型',width:50,
+    	   formatter: function(value,row,index){
+				if (row.attributes.resourceType == 1){
+					return '菜单';
+				}
+				if(row.attributes.resourceType == 2){
+					return '按钮';
+				}
+			}   
+       },
+       {field:'url',title:'url',width:200,
+    	   formatter: function(value,row,index){
+				return row.attributes.url;
+			}         
+       },
+       {field:'iconCls',title:'图标代码',width:200},
+       {field:'code',title:'资源代码',width:200,
+    	   formatter: function(value,row,index){
+				return row.attributes.code;
+			}      
+       }
+    ]]
+});
+
+//新增权限
+function addPermission(){
+	var node = $('#tt').treegrid('getSelected')
+	var params = {};
+	if(node != null){
+		if(node.attributes.resourceType == 2){	//如果选择为按钮那么选择它的父节点
+		    var row = $('#tt').treegrid('selectRow',node.attributes.parentId);  //选中父节点
+            row = $('#tt').treegrid('getSelected'); //获取父节点数据
+			params = {parentName:row.text,parentId:row.id,resourceType:2,resourceTypeName:'按钮'};
+		}else if(node.attributes.resourceType == 0){
+			params = {parentName:node.text,parentId:node.id,resourceType:1,resourceTypeName:'菜单'};
+		}else{
+			params = {parentName:node.text,parentId:node.id,resourceType:2,resourceTypeName:'按钮'};
+		}
+		console.log(params);
+	}else{
+		params = {parentName:'/',parentId:0,resourceType:0,resourceTypeName:'目录'}; //如果没有选择默认为根目录
+	}
+	sessionStorage.param = JSON.stringify(params);
+	openWindow('/permission/p_permission_edit','add_permission_window',450,400,'add_permission_frame');
+}
+
+//编辑权限
+function editPermission(){
+	var node = $('#tt').treegrid('getSelected')
+	if(node == null){
+		$.messager.alert('提示',"请选择");
+		return;
+	}
+	$.post("/permission/findPermission",{'id':node.id},function(data){
+		if(data == ''){
+			$.messager.alert('提示','系统错误');
+			return;
+		}
+		data.isEdit = true;
+		sessionStorage.param = JSON.stringify(data);
+	});
+	
+	openWindow('/permission/p_permission_edit','add_permission_window',450,400,'add_permission_frame');
+}
+
+//表单提交
+function subFormData(form_data){
+	if(form_data != false){
+		$.post("/permission/editPermission",form_data,function(data){
+			tg_refresh('tt');
+			$.messager.alert('提示',data.msg);
+			close_window('add_permission_window')
+		});
+	}
+}
+
+//删除权限
+function delPermission(){
+	var node = $('#tt').treegrid('getSelected')
+	if(node == null){
+		$.messager.alert('提示',"请选择");
+		return;
+	}
+	$.messager.confirm("提示","确定该操作吗",function(b){
+		if(b){
+			var rows = $('#tt').treegrid("getChildren",node.id)
+			if(rows.length > 0){
+				$.messager.alert('提示',"请删除该节点下面的所有子节点后再进行此操作");
+				return;
+			}
+			$.post("/permission/deletePermission",{"id":node.id},function(data){
+				tg_refresh('tt');
+				$.messager.alert('提示',data.msg);
+			});
+		}else{}
+	});
+}
+
+</script>
+</html>

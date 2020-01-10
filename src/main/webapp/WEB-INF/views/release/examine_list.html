@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="/statics/common/custom.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_common.js"></script>
+</head>
+<body>
+	<table id="dg"></table>
+	<div id="tb">
+		<a th:each="btn : ${btnList}" th:href="|javascript:${btn.url}|" class="easyui-linkbutton" th:data-options="|iconCls:'${btn.icon}',plain:true|"><span th:text="${btn.permissionName}"></span></a>
+	</div>
+	
+	<div id="release_form_window" data-options="
+			buttons:[{
+				text:'确定',
+				iconCls:'icon-ok',
+				handler:function(){
+					var formData = release_edit_frame.window.getFormData();
+					subExamine(formData);
+				}
+			},
+			{
+				text:'取消',
+				iconCls:'icon-cancel',
+				handler:function(){
+					close_window('release_form_window')
+				}
+			}
+			]"></div>
+</body>
+<script>
+var information_map = new Map();
+var user_map = new Map();
+$('#dg').datagrid({
+    url:'/release/data_release_list',
+    toolbar: '#tb',
+    singleSelect:true,
+    rownumbers:true,
+    fitColumns:true,
+    queryParams:{
+    	"state":1,
+    	"reviewState":0,
+    	"publishState":1,
+    },
+    columns:[
+      [{field:'id',checkbox:true},
+       {field:'source',title:'来源',width:200},
+       {field:'type',title:'栏目',width:200,
+    	   formatter : function(d){
+               return information_map.get(d);
+           }       
+       },
+       {field:'title',title:'标题',width:200},
+       {field:'createTime',title:'创建时间',width:100},
+       {field:'adminUserId',title:'创建人',width:100,
+    	   formatter : function(d){
+               return user_map.get(d);
+           }               
+       },
+       {field:'reviewState',title:'发布状态',width:50,
+    	   formatter: function(value,row,index){
+				if(row.reviewState == 0){
+					return '待审核';
+				}
+			}      
+       },
+    ]],
+    onBeforeLoad:function(data){
+    	$.post("/dataDic/d_list",{'dicCode':'dic_information'},function(data){
+    		data.forEach(function(v){  
+    			information_map.set(v.dicVal,v.dicKey)
+    		});
+    	});
+    	$.post("/user/findAllUser",function(data){
+    		data.forEach(function(v){  
+    			user_map.set(v.id,v.name)
+    		});
+    	});
+    }
+});
+
+
+function examine(){
+	var id = getSelectIds('dg');
+	if(id == ''){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	openWindow('/release/edit?id='+id+'&editType=examine','release_form_window',1000,400,'release_edit_frame');
+}
+
+function cli(id){
+	 window.parent.addTab('资讯'+id,'/release/news_details?id='+id,'',true); 
+}
+
+//************************************刷新功能***************************************
+function data_refresh(){
+	dg_refresh('dg');
+}
+
+function subExamine(formData){
+		if(formData != false){
+			$.post("/release/sub_form_data",formData,function(data){
+				$.messager.alert('提示',data.msg);
+				dg_refresh('dg');
+			});
+			close_window('release_form_window')
+		}
+}
+
+
+
+</script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="/statics/common/easy_validator.js"></script>
+</head>
+<body>
+	    <form id="ff" method="post">
+	    	<input type="hidden" name="id" th:value="${formData?.id}">
+	    	<table cellpadding="5" style="display: block">
+	    		<tr>
+	    			<td>姓名:</td>
+	    			<td><input class="easyui-textbox" type="text" name="name" data-options="required:true,validType:['chinese','length[2,4]']" autocomplete="off" th:value="${formData?.name}"></input></td>
+	    		</tr>
+	    		<tr id="flag_une">
+	    			<td>用户名:</td>
+	    			<td><input class="easyui-textbox" type="text" name="username" data-options="required:true,validType:['length[3,16]']" autocomplete="off" th:value="${formData?.username}"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>部门:</td>
+	    			<td>
+	    				<input id="orgId" name="orgId" data-options="required:true">
+					</td>
+	    		</tr>
+	    		<tr id="flag_pwd">
+	    			<td>密码:</td>
+	    			<td><input class="easyui-textbox" type="password"  name="password" autocomplete="off" data-options="required:true"></input>
+	    			</td>
+	    		</tr>
+	    		<tr>
+	    			<td>职位:</td>
+	    			<td>
+	    				<input id="occupation" name="occupation" data-options="required:true">
+					</td>
+	    		</tr>
+	    		<tr>
+	    			<td>手机:</td>
+	    			<td><input class="easyui-textbox" type="text" name="phone" data-options="validType:['mobile']" autocomplete="off" th:value="${formData?.phone}"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>性别:</td>
+	    			<td>
+	    				<input id="sex" name="sex">
+	    			</td>
+	    		</tr>
+	    	</table>
+	    </form>
+</body>
+<script th:inline="javascript">
+$(function(){
+	var operaType = [[${operaType}]];
+	if(operaType == 'edit'){
+		$("#flag_une").remove();
+		$("#flag_pwd").remove();
+	}
+	if(operaType == 'restPwd'){
+		$("tr:not(#flag_pwd)").remove();
+	}
+});
+
+$("#orgId").combotree({
+    url: "/org/d_list_for_combotree",
+    panelHeight: "auto",
+    panelMaxHeight: 150, 
+    editable: false,
+    onLoadSuccess: function (){
+    	$("#orgId").combotree('setValue',[[${formData?.orgId}]]);
+    }
+});
+
+$("#occupation").combobox({
+    url: "/dataDic/d_list?dicCode=dic_occupation",
+    valueField: 'dicVal',
+    textField: 'dicKey',
+    panelHeight: "auto",
+    panelMaxHeight: 150,
+    editable: false,
+    onLoadSuccess: function (){
+    	$("#occupation").combobox('setValue',[[${formData?.occupation}]]);
+    }
+});
+
+$("#sex").combobox({
+    url: "/dataDic/d_list?dicCode=dic_sex",
+    valueField: 'dicVal',
+    textField: 'dicKey',
+    panelHeight: "auto",
+    editable: false,
+    onLoadSuccess: function (){
+    	$("#sex").combobox('setValue',[[${formData?.sex}]]);
+    }
+});
+
+function getFormData(){
+	if($("#ff").form('validate')){
+		return	$("#ff").serialize();
+	}
+	return false;
+}
+</script>
+</html>

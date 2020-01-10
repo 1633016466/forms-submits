@@ -1,0 +1,44 @@
+server:
+ port: 8888
+ 
+logging:
+ level:
+  com.batuer.batuer_model.mapper: debug
+ 
+ 
+mybatis:
+ type-aliases-package: com.batuer.batuer_model.model
+ mapper-locations: classpath:/com/formssubmits/mapper/*.xml
+
+  
+spring:
+ jackson:
+    default-property-inclusion: non_null
+ aop:
+  proxy-target-class: true
+  auto: true
+     
+ datasource:
+  url: jdbc:mysql://localhost:3306/test
+  username: root
+  password: root
+  driver-class-name: com.mysql.jdbc.Driver
+  
+     
+ thymeleaf:
+  cache: false
+  prefix: /WEB-INF/views/
+  suffix: .html
+  encoding: UTF-8
+  content-type: text/html
+  mode: HTML
+  
+ resources:
+  static-locations: classpath:/static/*
+  
+pagehelper:
+ helper-dialect: mysql
+ params: count=countSql
+ reasonable: true
+ pageSizeZero: true
+ support-methods-arguments: true

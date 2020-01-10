@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+</head>
+<body>
+	    <form id="ff" method="post">
+	    	<table cellpadding="5" style="text-align:center;display: block">
+	    		<tr>
+	    			<td>角色名:</td>
+	    			<td><input class="easyui-textbox" type="text" name="roleName" data-options="required:true"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>描述 :</td>
+	    			<td><input class="easyui-textbox" type="text" name="description" data-options="required:true"></input></td>
+	    		</tr>
+	    	</table>
+	    </form>
+</body>
+<script>
+function validate_data(){
+	$("#ff").form('validate');
+	return $("#ff").serialize();
+}
+</script>
+</html>

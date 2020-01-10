@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>新闻资讯</title>
+    <script type="text/javascript" src="/statics/main/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/statics/main/js/jqslider.js"></script>
+    <link rel="stylesheet" type="text/css" href="/statics/main/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/statics/main/fonts/iconfont.css">
+ 
+
+</head>
+<body>
+<div class="news">
+    <ul>
+    <!-- <li>
+            <h2><a href="#">The U.S. HVAC industry is in crisis</a></h2>
+            <div class="note">
+                <p>The U.S. HVAC industry is in crisis</p>
+                <div class="info">
+                    <span><i class="iconfont icon-date"></i>2019/3/22 20:06:03</span>
+                    <span>
+                        <i class="iconfont icon-view"></i>
+                        4次浏览
+                    </span>
+                </div>
+            </div>
+        </li> -->
+        <li th:each="news : ${newsList}">
+                <h2><a th:uid = "${news.id}" href="javascript:void(0);" th:text="${news.title}"></a></h2>
+                <div class="note">
+                    <!-- <a><img src="images/1.jpg"></a> -->
+                    <p>来源:<span th:text="${news.source}"></span></p>
+                    <div class="info">
+                        <span th:text="${news.createTime}"><i class="iconfont icon-date"></i></span>
+                       <!--  <span>
+                            <i class="iconfont icon-view"></i>18次浏览
+                        </span> -->
+                    </div>
+                </div>
+            </li>
+    </ul>
+</div>
+</body>	
+<script>
+$(".news").on('click','h2 a',function(){
+	window.parent.addTab($(this).text(),'/release/news_details?id='+$(this).attr("uid"),'',true); 
+});
+</script>
+</html>

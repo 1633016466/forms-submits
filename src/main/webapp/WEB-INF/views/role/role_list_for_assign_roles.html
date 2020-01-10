@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Basic DataGrid - jQuery EasyUI Demo</title>
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="/statics/easy/easyui/1.7.0/demo/demo.css">
+	<link rel="stylesheet" type="text/css" href="/statics/common/custom.css">
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/statics/easy/easyui/1.7.0/jquery.easyui.min.js"></script>
+</head>
+<body>
+	<table id="dg"></table>
+</body>
+<script>
+$('#dg').datagrid({
+    url:'/role/data_role_list',
+    toolbar: '#tb',
+    pagination:true,
+    nowrap:true,
+    columns:[
+      [{field:'id',title:'ID',width:200,checkbox:true},
+       {field:'roleName',title:'角色名',width:200},
+       {field:'description',title:'描述',width:200},
+       {field:'createTime',title:'创建时间',width:200},
+       {field:'state',title:'状态',width:200,
+    	   formatter: function(value,row,index){
+				if (row.state == 1){
+					return '启用';
+				}
+				if(row.state == 0){
+					return '禁用';
+				}
+			}         
+       },
+    ]],
+    onLoadSuccess:function(){
+    	var ids_string = sessionStorage.roleId+'';
+    	var rows = $(this).datagrid("getRows");
+	    //循环数据找出列表中ID和需要选中数据的ID相等的数据并选中
+	    for(var k=0;k<ids_string.split(",").length;k++){
+	 	    for(var i=0;i<rows.length;i++){
+		      var rowId = rows[i].id;
+		      var id = ids_string.split(",")[k];
+		        if(rowId == id){
+		          var index = $(this).datagrid("getRowIndex",rows[i])
+		          $(this).datagrid("selectRow",index);
+		        }
+		    } 
+	    }
+    	sessionStorage.roleId = ''; 
+    }
+});
+
+var pager = $("#dg").datagrid("getPager"); 
+pager.pagination({ 
+   layout:['list','sep','first','prev','links','next','last','sep','refresh'],
+   onSelectPage:function (pageNo, pageSize) {
+		getData(pageNo,pageSize);
+   } 
+}); 
+
+function getSeletId(){
+	var rows = $("#dg").datagrid("getSelections");
+	if(rows == ''){
+		$.messager.alert('提示','请选择');
+		return;
+	}
+	return rows;
+}
+</script>
+</html>

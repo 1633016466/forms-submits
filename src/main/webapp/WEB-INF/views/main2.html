@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">   <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+
+    <title>首页</title>
+    <script type="text/javascript" src="/statics/main/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/statics/main/js/jqslider.js"></script>
+    <link rel="stylesheet" type="text/css" href="/statics/main/css/style.css">
+    <script type="text/javascript" src="/statics/vue/vue.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#slide-box").jqslider(); //初始化幻灯片
+        });
+    </script>
+
+</head>
+<body>
+    <div class="content-list">
+        <div class="active-list pull-left">
+         <div class="nav"><img src="/statics/main/images/index_icon_1.png"/><span class="title">最新活动</span></div>
+            <div id="slide-box" class="slide-box">
+                <ul class="list-box">
+                    <li><a title="新闻" href="javascript:void(0);" ><img src="https://17759478.s21i.faiusr.com/2/ABUIABACGAAg1dDc5wUojuL_tQcwoAs4uAg!800x800.jpg" /></a></li>
+                    <li><a title="新闻" href="javascript:void(0);" ><img src="https://17759478.s21i.faiusr.com/2/ABUIABACGAAg1dDc5wUonKWy9gUwoAs4uAg!800x800.jpg" /></a></li>
+                    <li><a title="新闻" href="javascript:void(0);" ><img src="https://17759478.s21i.faiusr.com/2/ABUIABACGAAg0NTc5wUo9tqF3QMwoAs4uAg!800x800.jpg" /></a></li>
+                    <li><a title="新闻" href="javascript:void(0);" ><img src="https://17759478.s21i.faiusr.com/2/ABUIABACGAAg1tDc5wUoyKvY_gYwoAs4uAg!800x800.jpg" /></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="news-right">
+            <!-- <div class=" tab_menu"><p>公司新闻<a class="more  pull-right">更多</a></p></div> -->
+            <div class="nav"><img src="/statics/main/images/index_icon_1.png"/><span class="title">公司新闻</span><a class="more" href="javascript:more_gsxw();">更多</a></div>
+            <ul class="news-list">
+                <li v-for="(hd,index) in hdlist" v-if='index<=7'>
+			    	<p><a class="title" :nid="hd.id" :title="hd.title" >{{ hd.title }}</a><span class="time">{{ hd.createTime }}</span></p>
+			  	</li>
+            </ul>
+        </div>
+        <div class="wp-media_content">
+            <div class="img_over">
+                <img src="/statics/main/images/c9.jpg"/>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="content-list clear">
+        <div class="pull-left  news-tz">
+            <div class="nav"><img src="/statics/main/images/index_icon_1.png"/><span class="title">通知公告</span><a class="more" href="javascript:more_tzgg();" >更多</a></div>        
+            <ul class="news-list">
+                <li v-for="(gg,index) in gglist" v-if='index<=8'>
+			  		<a class="title" :nid="gg.id" :title="gg.title">{{gg.title}}</a><span class="time">{{gg.createTime}}</span>
+			  	</li>
+            </ul>
+        </div>
+        <div class="pull-right news-tg">
+                <div class="nav"><img src="/statics/main/images/index_icon_1.png"/><span class="title">员工天地</span><a class="more" href="javascript:void(0);">更多</a></div>
+        
+            <ul class="news-list">
+                <li v-for="(yg,index) in ygtdlist" v-if='index<=3'>
+			  		<a class="title" :nid="yg.id" :title="yg.title" >【{{yg.type}}】{{yg.title}}</a><span class="time">{{yg.createTime}}</span>
+			  	</li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script>
+var gshd_vm = new Vue({
+	  el: '.content-list',
+	  data: {
+	    hdlist:{}
+	  },
+	  methods: {
+		  getData: function() {
+			  $.post('/release/news',{'type':3,'publishState':1,'reviewState':1,'state':1},
+				function(data){
+				  gshd_vm.hdlist =  data;
+			  	}
+			  );
+		  }
+	  },
+	  created:function(){
+		  this.getData();
+	  }
+})
+
+var hd_vm = new Vue({
+	  el: '.clear',
+	  data: {
+	    gglist:{},
+	    ygtdlist:{}
+	  },
+	  methods: {
+		  getGgData: function() {
+			  $.post('/release/news',{'type':1,'publishState':1,'reviewState':1,'state':1},
+				function(data){
+				  hd_vm.gglist =  data;
+			  	}
+			  );
+		  },
+		  getYgtdData:function() {
+			  $.post('/employee_world/getEmployeeWorldListToMap',
+				function(data){
+				  hd_vm.ygtdlist =  data;
+			  	}
+			  );
+		  }
+	  },
+	  created:function(){
+		  this.getGgData();
+		  this.getYgtdData();
+	  }
+})
+
+//员工天地
+$(".pull-right").on('click','.news-list li a',function(){
+	window.parent.addTab($(this).attr("title"),'/employee_world/news_employee_details?id='+$(this).attr("nid"),'', true);
+});
+
+//员工天地列表
+$(".pull-right").on('click','.more',function(){
+	window.parent.addTab('员工天地-更多','/employee_world/news_employee_list','', true);
+});
+
+//通知公告
+$(".pull-left").on('click','.news-list li a',function(){
+	window.parent.addTab($(this).attr("title"),'/release/news_details?id='+$(this).attr("nid"),'', true);
+});
+
+
+
+//公司新闻
+$(".news-right").on('click','.news-list li a',function(){
+	window.parent.addTab($(this).attr("title"),'/release/news_details?id='+$(this).attr("nid"),'', true);
+});
+
+
+
+//通知公告列表
+function more_tzgg(){
+	window.parent.addTab('通知公告-更多','/release/news_list?type=1','', true);
+}
+
+
+//公司新闻列表
+function more_gsxw(){
+	window.parent.addTab('公司新闻-更多','/release/news_list?type=3','', true);
+}
+
+</script>
+</html>
