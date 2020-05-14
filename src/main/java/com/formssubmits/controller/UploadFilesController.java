@@ -42,7 +42,16 @@ public class UploadFilesController {
 	@Autowired
 	EntInfosService entInfosService;
 
-	
+	/**
+	 * 作者：龚润忠
+	 * 描述：跳转上传页面
+	 * @return
+	 */
+	@RequestMapping("/uploadHtml")
+	public String uploadFiles(){
+		return "uploadFiles";
+	}
+
 	/**
 	 * @description 数据+文件上传提交
 	 * @param user
